@@ -2,7 +2,7 @@
 
 variable "resource_group_name" {
   type        = string
-  description = "RG name" 
+  description = "RG name"
   default     = "NewRG1"
 }
 
