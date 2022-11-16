@@ -1,0 +1,91 @@
+Format and validate terraform code {
+ # format code per HCL canonical standard 
+ terraform fmt 
+
+ # validate code for syntax
+ terraform validate
+
+ # validate code skip backend validation
+ terraform validate -backend=false
+}
+
+Initialize your Terraform working directory {
+ # initialize directory, pull down providers
+ terraform init 
+
+ # initialize directory, do not download plugins
+ terraform init -get-plugins=false
+
+ # initialize directory, do not verify plugins for hashicorp signature
+ terraform init -verify-plugins=false
+}
+
+Plan, Deploy and Cleanup Infrastructure {
+ # apply changes without being prompted to enter "yes"
+ terraform apply --auto-approve
+
+ # destroy the whole stack except above excluded resource(s)
+ # destroy/cleanup deployment without being prompted for "yes"
+ terraform destroy --auto-approve
+
+ # outputs a destroy plan
+ terraform plan -destroy
+
+ # only apply/destroy changes to the targeted resource
+ terraform apply -target=azure_instance.(resource deployment name)
+
+ # lock the state file so it can't be modified by any other Terraform apply or modification action (possible only where backend allows locking)
+ terraform apply -lock=true
+
+ # do not reconcile state file with real-world resources(helpful with large complex deployments for saving deployment time)
+ terraform apply refresh=false 
+
+ # number of simultaneous resource operations
+ terraform apply --parallelism=5 
+
+ # reconcile the state in Terraform state file with real-world resources
+ terraform refresh 
+
+ # get information about providers used in current configuration
+ terraform providers 
+}
+
+Terraform Workspaces {
+ # create a new workspace
+ terraform workspace new mynewworkspace 
+
+ # change to the selected workspace
+ terraform workspace select default
+
+ #list out all workspaces
+ terraform workspace list 
+}
+
+Terraform state Manipulation{
+ # show details stored in Terraform state for the resource
+ terraform state show azure_instance.(resource deployment name) 
+
+ # download and output terraform state to a file
+ terraform state pull > terraform.tfstate 
+ 
+ # replace an existing provider with another
+ terraform state replace-provider hashicorp/azure registry.custom.com/azure 
+ 
+ # list out all the resources tracked via the current state file
+ terraform state list 
+ 
+ # unmanage a resource, delete it from Terraform state file
+ # remove that resource you don't want to destroy
+ terraform state rm  azure_instance.(resource deployment name) 
+}
+
+Terraform Taint/Untaint (mark/unmark resource for recreation -> delete and then recreate) {
+ # taints resource to be recreated on next apply
+ terraform taint aws_instance.my_ec2 
+
+ # Remove taint from a resource
+ terraform untaint aws_instance.my_ec2 
+
+ # forcefully unlock a locked state file, LOCK_ID provided when locking the State file beforehand
+ terraform force-unlock LOCK_ID 
+}
